@@ -1,6 +1,7 @@
 #include "typeDef.h"
 #include "functions.h"
 #include <iostream>
+#include <random>
 
 using namespace std;
 
@@ -17,15 +18,16 @@ void push(List* aList, Element* anElement) {
   aList->first = anElement;
 }
 
-int top(const List * aList) {
-  // Si la liste est vide, on renvoie 0
-  if (aList->size == 0) {
-    return 0;
-  }
-
-  // Sinon, on renvoie la valeur de l'élément en tête de la liste
-  return aList->first->value;
-}
+int top(const List * aList)
+{
+    if (aList->first != nullptr)
+    {
+        return aList->first->value;
+    } else
+    {
+        return 0;
+    }
+};
 
 void pop(List * aList) {
   // Si la liste est vide, il n'y a rien à faire
@@ -77,9 +79,6 @@ void insert(List * aList, Element * anElement) {
 }
 
 void displayList(const List * aList) {
-  // On affiche la taille de la liste
-  cout << "List size: " << aList->size << endl;
-
   // On parcourt la liste et on affiche chaque élément
   Element * currentElement = aList->first;
   while (currentElement != nullptr) {
@@ -101,6 +100,9 @@ void deleteList(List * aList) {
   // On met à jour la taille de la liste
   aList->size = 0;
   aList->first = nullptr;
+
+  delete aList;
+
 }
 
 void remove(List * aList, const int aValue) {
@@ -134,7 +136,7 @@ void remove(List * aList, const int aValue) {
 }
 
 //Cette fonction renvoie le minimum de aNb1 et aNb2, ou aNb1 si les deux sont égaux.
-// Elle utilise l'opérateur ?: pour renvoyer l'un ou l'autre des deux nombres 
+// Elle utilise l'opérateur ?: pour renvoyer l'un ou l'autre des deux nombres
 //en fonction de la valeur de la condition.
 int min(const int aNb1, const int aNb2) {
   return aNb1 <= aNb2 ? aNb1 : aNb2;
@@ -154,12 +156,18 @@ void shuffle(List * aList) {
   // Tableau de booléens pour marquer les cartes déjà tirées
   bool drawnCards[99] = { false };
 
+    //Initialisation de la génération de nombres aléatoires
+    const int MIN=2, MAX=99;
+    random_device rd;
+    default_random_engine eng(rd());
+    uniform_int_distribution<int> distr(MIN, MAX);
+
   // Tirage aléatoire des cartes et insertion dans la liste (pile)
   for (int drawIndex = 0; drawIndex < 98; drawIndex++) {
     int card = -1;
     do {
       // Tirage aléatoire d'une carte
-      card = rand() % 99 + 2;
+      card = distr(eng);
     } while (drawnCards[card - 2]); // Tant que la carte a déjà été tirée, on recommence
 
     // Marque de la carte comme tirée
@@ -170,36 +178,20 @@ void shuffle(List * aList) {
   }
 }
 
+
 void displayBoard(const List * aFundationUpA, const List * aFundationUpB, const  List * aFundationDownA, const List * aFundationDownB, const List * aHand) {
-  // Affichage de la colonne de fondations du haut (A)
-  std::cout << "Fundations (up, A): ";
-  displayList(aFundationUpA);
-
-  // Affichage de la colonne de fondations du haut (B)
-  std::cout << "Fundations (up, B): ";
-  displayList(aFundationUpB);
-
-  // Affichage de la colonne de fondations du bas (A)
-  std::cout << "Fundations (down, A): ";
-  displayList(aFundationDownA);
-
-  // Affichage de la colonne de fondations du bas (B)
-  std::cout << "Fundations (down, B): ";
-  displayList(aFundationDownB);
-
-  // Affichage de la main du joueur
-  std::cout << "Hand: ";
-  displayList(aHand);
+cout << "A  B  x  C   D" << endl;
+cout << "1  1  x 100 100" << endl;
+cout << top(aFundationUpA) << "  " << top(aFundationUpB) << "  x " << top(aFundationDownA) << "  " << top(aFundationDownB) << endl << endl;
+cout << "Hand: ";
+displayList(aHand);
 }
 
 bool moveUp(List * aList, const int aCard) {
-  // Si la liste est vide ou si la valeur de la carte à insérer est inférieure à 10 de celle en tête de la liste, le mouvement n'est pas possible
-  if (aList->size == 0 || aCard + 10 < top(aList)) {
-    return false;
-  }
+
 
   // Si la valeur de la carte à insérer est supérieure à celle en tête de la liste, le mouvement est possible
-  if (aCard > top(aList)) {
+if (aCard > top(aList) || aCard + 10 == top(aList)) {
     // Création d'un nouvel élément à partir de la carte à insérer
     Element * newElement = new Element;
     newElement->value = aCard;
@@ -214,13 +206,9 @@ bool moveUp(List * aList, const int aCard) {
 }
 
 bool moveDown(List * aList, const int aCard) {
-  // Si la liste est vide ou si la valeur de la carte à insérer est supérieure de 10 à celle en tête de la liste, le mouvement n'est pas possible
-  if (aList->size == 0 || aCard - 10 > top(aList)) {
-    return false;
-  }
 
   // Si la valeur de la carte à insérer est inférieure à celle en tête de la liste, le mouvement est possible
-  if (aCard < top(aList)) {
+  if (aCard < top(aList) || aCard - 10 == top(aList) || top(aList) == 0) {
     // Création d'un nouvel élément à partir de la carte à insérer
     Element * newElement = new Element;
     newElement->value = aCard;
@@ -235,14 +223,29 @@ bool moveDown(List * aList, const int aCard) {
 }
 
 //Cette fonction demande à un joueur de jouer une carte en lui demandant d'abord de choisir la valeur de la carte
-// à jouer et ensuite le nom de la colonne de fondations dans laquelle jouer la carte. Elle utilise les entrées 
+// à jouer et ensuite le nom de la colonne de fondations dans laquelle jouer la carte. Elle utilise les entrées
 //standard pour récupérer la valeur et le nom choisis par le joueur.
 void play(int & aCard, char & aStack) {
-  cout << "Choose the value of the card to play: ";
-  cin >> aCard;
-  cout << "Choose the name of the stack (A, B, C, D): ";
-  cin >> aStack;
+  while (true) {
+    cout << "Enter the value of the card to play: ";
+    cin >> aCard;
+    if (aCard >= 2 && aCard <= 99) {
+      break;
+    }
+    cout << "Invalid value for card. Please enter a value between 2 and 99." << endl;
+  }
+  while (true) {
+    cout << "Enter the name of the stack (A, B, C, D): ";
+    cin >> aStack;
+    toupper(aStack);
+    if (aStack >= 'A' && aStack <= 'D') {
+      break;
+    }
+    cout << "Invalid stack char. Please enter a character between A and D." << endl;
+  }
+
 }
+
 
 bool isValid(const List * aHand, const int aValue) {
   // Parcours de la main pour vérifier si la carte est présente
@@ -280,3 +283,32 @@ int score(const List* aHand, const List* aStock) {
   return sum;
 }
 
+bool isGameOver(List* fundationUpA, List* fundationUpB, List* fundationDownA, List* fundationDownB,const List* aHand, const List* aStock) {
+    // Si toutes les piles de fondations sont pleines, la partie est terminée
+    if (fundationUpA->size == 14 && fundationUpB->size == 14 && fundationDownA->size == 14 && fundationDownB->size == 14) {
+        return true;
+    }
+
+    // Si le stock est vide et que la main du joueur est vide, la partie est terminée
+    if (aStock->size == 0 && aHand->size == 0) {
+        return true;
+    }
+
+    return false;
+}
+
+int calculateScore(List* hand, List* stock) {
+    int score = 0;
+    // Parcours la main du joueur et le stock et additionne les valeurs des cartes
+    Element* currentElement = hand->first;
+    while (currentElement != nullptr) {
+        score += currentElement->value;
+        currentElement = currentElement->next;
+    }
+    currentElement = stock->first;
+    while (currentElement != nullptr) {
+        score += currentElement->value;
+        currentElement = currentElement->next;
+    }
+    return score;
+}

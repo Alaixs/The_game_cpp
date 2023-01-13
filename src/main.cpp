@@ -1,75 +1,118 @@
 //v0.6.0
 #include <iostream>
+#include "typeDef.h"
 #include "functions.h"
+
 
 using namespace std;
 
+  /*
+
+test_push();
+test_top();
+test_pop();
+test_insert();
+test_displayList();
+test_deleteList();
+test_remove();
+test_min();
+
+
+test_putACard();
+test_-e();
+test_displayBoard();
+test_moveUp();
+test_moveDown();
+test_play();
+test_isValid();
+test_score();
+}
+*/
+
 int main() {
-  // Initialisation du plateau de jeu
-  List fundationUpA, fundationUpB, fundationDownA, fundationDownB, stock, hand;
-  shuffle(&stock);
+    // Initialisation des piles de fondations et de la main du joueur
+    List * fundationUpA = new List();
+    List * fundationUpB = new List();
+    List * fundationDownA = new List();
+    List * fundationDownB = new List();
+    List * hand = new List();
 
-  // Distribution des cartes au joueur
-  for (int i = 0; i < 10; ++i) {
-    int card = top(&stock);
-    pop(&stock);
-    putACard(&hand, card);
-  }
+    // Initialisation du stock
+    List * stock = new List();
+    shuffle(stock);
 
-  // Début de la partie
-  bool gameOver = false;
-  while (!gameOver) {
-    // Affichage du plateau de jeu
-    displayBoard(&fundationUpA, &fundationUpB, &fundationDownA, &fundationDownB, &hand);
-
-    // Demande de jouer une carte au joueur
-    int card;
-    char stack;
-    play(card, stack);
-
-    // Vérification de la validité de la carte jouée
-    if (!isValid(&hand, card)) {
-      cout << "Invalid card." << endl;
-      continue;
+    // Distribution des cartes
+    for (int i = 0; i < 5; i++) {
+        push(hand, new Element{top(stock)});
+        pop(stock);
     }
 
-    // Déplacement de la carte dans la colonne de fondations choisie
-    bool moveSuccessful = false;
-    switch (stack) {
-      case 'A':
-        moveSuccessful = moveUp(&fundationUpA, card);
-        break;
-      case 'B':
-        moveSuccessful = moveUp(&fundationUpB, card);
-        break;
-      case 'C':
-        moveSuccessful = moveDown(&fundationDownA, card);
-        break;
-      case 'D':
-        moveSuccessful = moveDown(&fundationDownB, card);
-        break;
-      default:
-        cout << "Invalid stack." << endl;
-        break;
+    // Boucle de jeu
+    while (!isGameOver(fundationUpA, fundationUpB, fundationDownA, fundationDownB, hand, stock)) {
+        // Affichage du plateau de jeu
+        displayBoard(fundationUpA, fundationUpB, fundationDownA, fundationDownB, hand);
+
+        // Demande de jeu à l'utilisateur
+        int card;
+        char stack;
+        play(card, stack);
+
+
+        // Vérification de la validité de la carte
+        if (!isValid(hand, card)) {
+            cout << "Carte non valide, veuillez réessayer." << endl;
+            continue;
+        }
+
+        // Déplacement de la carte vers la pile de fondation sélectionnée
+        bool moveSuccessful;
+        switch (stack) {
+            case 'A':
+                moveSuccessful = moveUp(fundationUpA, card);
+                break;
+            case 'B':
+                moveSuccessful = moveUp
+                (fundationUpB, card);
+                break;
+            case 'C':
+                moveSuccessful = moveDown(fundationDownA, card);
+                break;
+            case 'D':
+                moveSuccessful = moveDown(fundationDownB, card);
+                break;
+            default:
+                moveSuccessful = false;
+                break;
+    }
+    if (!moveSuccessful) {
+        cout << "Déplacement impossible, veuillez réessayer." << endl;
+        continue;
     }
 
-    // Si le mouvement a réussi, on retire la carte de la main du joueur
-    if (moveSuccessful) {
-      remove(&hand, card);
-    } else {
-      cout << "Invalid move." << endl;
+    // Suppression de la carte de la main du joueur
+    remove(hand, card);
+
+    // Ajout d'une carte de la main du joueur si la main est vide
+    if (hand->size == 0) {
+        for(int i = 0; i < 5; i++)
+        {
+        push(hand, new Element{top(stock)});
+        pop(stock);
+         }
     }
-
-    // Si la main du joueur est vide, la partie est terminée
-    if (hand.size == 0) {
-      gameOver = true;
-    }
-  }
-
-  // Calcul du score final
-  int finalScore = score(&hand, &stock);
-  cout << "Game over. Finalscore: " << finalScore << ::endl;
-
-  return 0;
 }
 
+// Calcul du score final
+int score = calculateScore(hand, stock);
+cout << "Partie terminée ! Score final : " << score << endl;
+
+// Libération de la mémoire
+deleteList(fundationUpA);
+deleteList(fundationUpB);
+deleteList(fundationDownA);
+deleteList(fundationDownB);
+deleteList(hand);
+deleteList(stock);
+
+return 0;
+}

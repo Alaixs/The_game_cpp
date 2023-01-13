@@ -4,6 +4,7 @@ using namespace std;
 
 #include "typeDef.h"
 #include "functions.h"
+#include "tests.h"
 
 /*
  * Utility functions for tests
@@ -347,6 +348,9 @@ void test_displayList()
 {
     int pass = 0;
     int failed = 0;
+    List * list;
+    list = new List;
+    initList(list, 1, 2, 3);
     cout << "********* Start testing of displayList *********" << endl;
     if (false)
     {
@@ -358,20 +362,29 @@ void test_displayList()
         cout << "FAIL! \t: xxx" << endl;
         failed++;
     }
+    delete list;
     cout << "Totals: " << pass << " passed, " << failed << " failed" << endl;
     cout << "********* Finished testing of displayList *********" << endl;
 }
 
 /*
  * Tests
- * Aucune idée
+ * Liste 1, 2, 3 -> liste vide, taille 0
+ * Liste vide -> liste vide, taille = 0
  */
-void test_deleteList()
-{
+void test_deleteList() {
     int pass = 0;
     int failed = 0;
+  List * list;
+  list = new List;
+    initList(list, 1, 2, 3);
     cout << "********* Start testing of deleteList *********" << endl;
-    if (false)
+    cout << "Before the test, here the values of the list" << endl;
+    if (list->size == 3 and
+            list->first->value == 1 and
+            list->first->next->value == 2 and
+            list->first->next->next->value == 3 and
+            list->first->next->next->next == nullptr)
     {
         cout << "PASS \t: xxx" << endl;
         pass++;
@@ -382,9 +395,8 @@ void test_deleteList()
         failed++;
     }
     cout << "Totals: " << pass << " passed, " << failed << " failed" << endl;
-    cout << "********* Finished testing of deleteList *********" << endl;
+    cout << "********* Finished testing of min *********" << endl;
 }
-
 /*
  * Tests
  * Une liste vide, valeur 31 -> la taille = 0

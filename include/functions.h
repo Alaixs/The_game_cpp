@@ -141,4 +141,29 @@ bool isValid(const List * aHand, const int aValue);
  */
 int score(const List* aHand, const List* aStock);
 
+
+/*
+ * Check if the game is over
+ * param: fundations (up and down)
+ * param: a stock (stack)
+ * param: the player hand (list)
+ * return: true if the game is over
+ * var: valid boolean
+ */
+bool isGameOver(List* fundationUpA, List* fundationUpB, List* fundationDownA, List* fundationDownB,const List* aHand, const List* aStock);
+
+
+/*
+ * Calculate a score
+ * Sum cards' value of the hand and the stock
+ * param: a hand (list)
+ * param: a stock (list)
+ * return: int a score
+ * var: int sum
+ */
+int calculateScore(List* hand, List* stock);
+
+
+//i ^= 1;
+
 #endif // FUNCTIONS_H
