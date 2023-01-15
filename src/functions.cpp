@@ -1,3 +1,4 @@
+//v0.7.0
 #include "typeDef.h"
 #include "functions.h"
 #include <iostream>
@@ -288,7 +289,7 @@ bool isGameOver(List * hand, List * fundationUpA, List * fundationUpB, List * fu
 {
         Element * current = hand->first;
         while (current != NULL) {
-            if (current->value > top(fundationUpA) || current->value + 10 == top(fundationUpA) || current->value < top(fundationDownA) || current->value - 10 == top(fundationDownA) ||(current->value > top(fundationUpB) || current->value + 10 == top(fundationUpB) || current->value < top(fundationDownB) || current->value - 10 == top(fundationDownB) )) {
+            if (current->value > top(fundationUpA) || current->value + 10 == top(fundationUpA) || current->value < top(fundationDownA) || current->value - 10 == top(fundationDownA) ||(current->value > top(fundationUpB) || current->value + 10 == top(fundationUpB) || current->value < top(fundationDownB) || current->value - 10 == top(fundationDownB) || top(fundationDownA) == 0 || top(fundationDownB) == 0 || top(fundationUpA) == 0 || top(fundationUpB) == 0)) {
                 return false;
             }
             current = current->next;

@@ -166,17 +166,6 @@ int score(const List* aHand, const List* aStock);
 bool isGameOver(List * hand, List * fundationUpA, List * fundationUpB, List * fundationDownA, List * fundation);
 
 
-/*
- * Calculate a score
- * Sum cards' value of the hand and the stock
- * param: a hand (list)
- * param: a stock (list)
- * return: int a score
- * var: int sum
- */
-int calculateScore(List* hand, List* stock);
-
-
 //i ^= 1;
 
 #endif // FUNCTIONS_H

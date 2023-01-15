@@ -56,9 +56,6 @@ int main() {
         int card;
         char stack;
         play(card, stack);
-        cout << "Score: " << score(hand, stock) << endl;
-        cout << "Score: " << calculateScore(hand, stock) << endl;
-
         // Vérification de la validité de la carte
         if (!isValid(hand, card)) {
             cout << "Carte non valide, veuillez réessayer." << endl;
@@ -85,8 +82,7 @@ int main() {
 }
 
 // Calcul du score final
-int score = calculateScore(hand, stock);
-cout << "Partie terminée ! Score final : " << score << endl;
+cout << "Partie terminée ! Score final : " << score(hand, stock) << endl;
 
 // Libération de la mémoire
 deleteList(fundationUpA);
