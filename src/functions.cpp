@@ -261,6 +261,41 @@ bool isValid(const List * aHand, const int aValue) {
   return false;
 }
 
+bool moveSuccessful(List * aFundationUpA,List * aFundationUpB,List * aFundationDownA,List * aFundationDownB,List * aHand, char aStack, int aCard) 
+{
+        bool moveSuccessful;
+        switch (aStack) {
+            case 'A':
+                moveSuccessful = moveUp(aFundationUpA, aCard);
+                break;
+            case 'B':
+                moveSuccessful = moveUp
+                (aFundationUpB, aCard);
+                break;
+            case 'C':
+                moveSuccessful = moveDown(aFundationDownA, aCard);
+                break;
+            case 'D':
+                moveSuccessful = moveDown(aFundationDownB, aCard);
+                break;
+            default:
+                return false;
+                break;
+    }
+}
+
+bool isGameOver(List * hand, List * fundationUpA, List * fundationUpB, List * fundationDownA, List * fundationDownB)
+{
+        Element * current = hand->first;
+        while (current != NULL) {
+            if (current->value > top(fundationUpA) || current->value + 10 == top(fundationUpA) || current->value < top(fundationDownA) || current->value - 10 == top(fundationDownA) ||(current->value > top(fundationUpB) || current->value + 10 == top(fundationUpB) || current->value < top(fundationDownB) || current->value - 10 == top(fundationDownB) )) {
+                return false;
+            }
+            current = current->next;
+        }
+        return true;
+} 
+
 int score(const List* aHand, const List* aStock) {
   // Somme des valeurs des cartes de la main et du stock
   int sum = 0;
@@ -283,19 +318,7 @@ int score(const List* aHand, const List* aStock) {
   return sum;
 }
 
-bool isGameOver(List* fundationUpA, List* fundationUpB, List* fundationDownA, List* fundationDownB,const List* aHand, const List* aStock) {
-    // Si toutes les piles de fondations sont pleines, la partie est terminée
-    if (fundationUpA->size == 14 && fundationUpB->size == 14 && fundationDownA->size == 14 && fundationDownB->size == 14) {
-        return true;
-    }
 
-    // Si le stock est vide et que la main du joueur est vide, la partie est terminée
-    if (aStock->size == 0 && aHand->size == 0) {
-        return true;
-    }
-
-    return false;
-}
 
 int calculateScore(List* hand, List* stock) {
     int score = 0;

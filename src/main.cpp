@@ -1,4 +1,4 @@
-//v0.6.0
+//v0.7.0
 #include <iostream>
 #include "typeDef.h"
 #include "functions.h"
@@ -48,7 +48,7 @@ int main() {
     }
 
     // Boucle de jeu
-    while (!isGameOver(fundationUpA, fundationUpB, fundationDownA, fundationDownB, hand, stock)) {
+    while (!isGameOver(hand, fundationUpA, fundationUpB, fundationDownA, fundationDownB)) {
         // Affichage du plateau de jeu
         displayBoard(fundationUpA, fundationUpB, fundationDownA, fundationDownB, hand);
 
@@ -56,7 +56,8 @@ int main() {
         int card;
         char stack;
         play(card, stack);
-
+        cout << "Score: " << score(hand, stock) << endl;
+        cout << "Score: " << calculateScore(hand, stock) << endl;
 
         // Vérification de la validité de la carte
         if (!isValid(hand, card)) {
@@ -65,29 +66,10 @@ int main() {
         }
 
         // Déplacement de la carte vers la pile de fondation sélectionnée
-        bool moveSuccessful;
-        switch (stack) {
-            case 'A':
-                moveSuccessful = moveUp(fundationUpA, card);
-                break;
-            case 'B':
-                moveSuccessful = moveUp
-                (fundationUpB, card);
-                break;
-            case 'C':
-                moveSuccessful = moveDown(fundationDownA, card);
-                break;
-            case 'D':
-                moveSuccessful = moveDown(fundationDownB, card);
-                break;
-            default:
-                moveSuccessful = false;
-                break;
-    }
-    if (!moveSuccessful) {
-        cout << "Déplacement impossible, veuillez réessayer." << endl;
-        continue;
-    }
+        if (!moveSuccessful(fundationUpA, fundationUpB, fundationDownA, fundationDownB, hand,stack,card)) {
+            cout << "Déplacement impossible, veuillez réessayer." << endl;
+            continue;
+        }
 
     // Suppression de la carte de la main du joueur
     remove(hand, card);
