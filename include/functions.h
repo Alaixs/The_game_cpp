@@ -144,6 +144,15 @@ bool isValid(const List * aHand, const int aValue);
  */
 bool moveSuccessful(List * aFundationUpA,List * aFundationUpB,List * aFundationDownA,List * aFundationDownB, char aStack, int aCard);
 
+/*
+ * Play a turn
+ * param: fundations (up and down)
+ * param: a stock (stack)
+ * param: the player hand (list)
+ * param: the current player
+ * var: a card
+ */
+void playTurn(List * fundationUpA, List * fundationUpB, List * fundationDownA, List * fundationDownB, List * hands[], int currentPlayer);
 
 /*
  * Calculate a score

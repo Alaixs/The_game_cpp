@@ -1,4 +1,4 @@
-//v1.4.0
+//v1.6.0
 #include "typeDef.h"
 #include "functions.h"
 #include <iostream>
@@ -253,7 +253,6 @@ void play(int & aCard, char & aStack) {
 
 }
 
-
 bool isValid(const List * aHand, const int aValue) {
     // We search the card in the hand
     Element * currentElement = aHand->first;
@@ -290,6 +289,24 @@ bool moveSuccessful(List * aFundationUpA,List * aFundationUpB,List * aFundationD
         break;
     }
 }
+
+void playTurn(List * fundationUpA, List * fundationUpB, List * fundationDownA, List * fundationDownB, List * hands[], int currentPlayer) {
+    displayBoard(fundationUpA, fundationUpB, fundationDownA, fundationDownB, hands[currentPlayer]);
+    int card;
+    char stack;
+    play(card, stack);
+    if (!isValid(hands[currentPlayer], card)) {
+        cout << "Invalid card, please try again." << endl;
+
+    }
+    if (!moveSuccessful(fundationUpA, fundationUpB, fundationDownA, fundationDownB,stack,card)) {
+        cout << "Unable to move, please try again." << endl;
+
+    }
+    remove(hands[currentPlayer], card);
+
+}
+
 
 bool isGameOver(List * hand, List * fundationUpA, List * fundationUpB, List * fundationDownA, List * fundationDownB)
 {
