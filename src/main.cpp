@@ -1,4 +1,4 @@
-//v0.7.0
+//v1.0.0
 #include <iostream>
 #include "typeDef.h"
 #include "functions.h"
@@ -37,6 +37,13 @@ int main() {
     List * fundationDownB = new List();
     List * hand = new List();
 
+    // Initialisation des piles de fondations
+
+        push(fundationUpA, new Element{1});
+        push(fundationUpB, new Element{1});
+        push(fundationDownA, new Element{100});
+        push(fundationDownB, new Element{100});
+
     // Initialisation du stock
     List * stock = new List();
     shuffle(stock);
@@ -48,7 +55,7 @@ int main() {
     }
 
     // Boucle de jeu
-    while (!isGameOver(hand, fundationUpA, fundationUpB, fundationDownA, fundationDownB)) {
+    while (!isGameOver(hand, fundationUpA, fundationUpB, fundationDownA, fundationDownB) || (stock->size == 0 && hand->size == 0) ) {
         // Affichage du plateau de jeu
         displayBoard(fundationUpA, fundationUpB, fundationDownA, fundationDownB, hand);
 
@@ -58,13 +65,13 @@ int main() {
         play(card, stack);
         // Vérification de la validité de la carte
         if (!isValid(hand, card)) {
-            cout << "Carte non valide, veuillez réessayer." << endl;
+            cout << "Invalid card, please try again." << endl;
             continue;
         }
 
         // Déplacement de la carte vers la pile de fondation sélectionnée
-        if (!moveSuccessful(fundationUpA, fundationUpB, fundationDownA, fundationDownB, hand,stack,card)) {
-            cout << "Déplacement impossible, veuillez réessayer." << endl;
+        if (!moveSuccessful(fundationUpA, fundationUpB, fundationDownA, fundationDownB,stack,card)) {
+            cout << "Unable to move, please try again." << endl;
             continue;
         }
 
@@ -81,8 +88,14 @@ int main() {
     }
 }
 
+if(stock->size == 0 && hand->size == 0)
+{
+    cout << "Game won! Final score : " << score(hand, stock) << endl;
+}
+else
+
 // Calcul du score final
-cout << "Partie terminée ! Score final : " << score(hand, stock) << endl;
+cout << "Game Lost! Final score : " << score(hand, stock) << endl;
 
 // Libération de la mémoire
 deleteList(fundationUpA);

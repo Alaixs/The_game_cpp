@@ -141,7 +141,7 @@ bool isValid(const List * aHand, const int aValue);
  * return: true if the move is possible
  * var: valid boolean
  */
-bool moveSuccessful(List * aFundationUpA,List * aFundationUpB,List * aFundationDownA,List * aFundationDownB,List * aHand, char aStack, int aCard);
+bool moveSuccessful(List * aFundationUpA,List * aFundationUpB,List * aFundationDownA,List * aFundationDownB, char aStack, int aCard);
 
 
 /*
@@ -163,7 +163,18 @@ int score(const List* aHand, const List* aStock);
  * return: true if the game is over
  * var: valid boolean
  */
-bool isGameOver(List * hand, List * fundationUpA, List * fundationUpB, List * fundationDownA, List * fundation);
+bool isGameOver(List * hand, List * fundationUpA, List * fundationUpB, List * fundationDownA, List * fundationDownB);
+
+
+/*
+ * Calculate a score
+ * Sum cards' value of the hand and the stock
+ * param: a hand (list)
+ * param: a stock (list)
+ * return: int a score
+ * var: int sum
+ */
+int calculateScore(List* hand, List* stock);
 
 
 //i ^= 1;
