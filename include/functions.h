@@ -7,6 +7,7 @@
  * Utility functions for data structure (based on STL API)
  */
 
+
 /*
  * Inserts a new element at the top of a list (stack), above its current top
  * element.
