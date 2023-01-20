@@ -1,4 +1,4 @@
-//v1.6.0
+//v1.8.0
 #include <iostream>
 #include "typeDef.h"
 #include "functions.h"
@@ -25,8 +25,8 @@ test_play();
 test_isValid();
 test_score();
 }
-*/
-// /*
+ */
+///*
 
 int main() {
     // Initialization of the foundation piles and the player's hand
@@ -46,6 +46,8 @@ int main() {
     List * stock = new List();
     shuffle(stock);
 
+    system("color 9F");
+
     // Request for the number of players
     int numberOfPlayers = 0;
     while(numberOfPlayers < 1 || numberOfPlayers > 5)
@@ -59,15 +61,13 @@ int main() {
     for (int iHand = 0; iHand < numberOfPlayers; iHand++) {
         hands[iHand] = new List();
     }
-
-    // Distribution of cards
-    int cardsPerPlayer = 0;
+int cardsPerPlayer = 0;
     if(numberOfPlayers == 1) cardsPerPlayer = 8;
     else if(numberOfPlayers == 2) cardsPerPlayer = 7;
     else cardsPerPlayer = 6;
     for (int nbCard = 0; nbCard < cardsPerPlayer; nbCard++) {
         for (int nbPlayer = 0; nbPlayer < numberOfPlayers; nbPlayer++) {
-            push(hands[nbPlayer], new Element{top(stock)});
+            insert(hands[nbPlayer], new Element{top(stock)});
             pop(stock);
         }
     }
@@ -76,46 +76,46 @@ int main() {
     int currentPlayer = 0;
 
     // Game loop
-    while (!isGameOver(hands[currentPlayer], fundationUpA, fundationUpB, fundationDownA, fundationDownB) || (stock->size == 0 && hands[currentPlayer]->size == 0)) {
-
-        // Case of a multiplayer game
-        if (numberOfPlayers > 1)
-        {
+    while (true)
+    {
+    
             cout << "Player " << currentPlayer + 1 << ", it's your turn !" << endl;
             // Two turns per player
             for(int turn = 0; turn < 2; ++turn)
             {
                 playTurn(fundationUpA, fundationUpB, fundationDownA, fundationDownB, hands, currentPlayer);
+                if (isGameOver(hands[currentPlayer], fundationUpA, fundationUpB, fundationDownA, fundationDownB) || (stock->size == 0 && hands[currentPlayer]->size == 0))
+                    {
+                        displayEndScreen(hands, stock, numberOfPlayers);
+                        return 0;
+                    }
             }
-            char choice = '\0';
-            cout << "Do you want to play again (y/n)? ";
-            cin >> choice;
-            while(choice == 'y')
+
+            //ask to the player if he wants to play again with a loop
+            char answer = ' ';
+            while(answer != 'n')
             {
+                cout << "Do you want to play again ? (y/n) ";
+                cin >> answer;
                 playTurn(fundationUpA, fundationUpB, fundationDownA, fundationDownB, hands, currentPlayer);
+                if (isGameOver(hands[currentPlayer], fundationUpA, fundationUpB, fundationDownA, fundationDownB) || (stock->size == 0 && hands[currentPlayer]->size == 0))
+                    {
+                        displayEndScreen(hands, stock, numberOfPlayers);
+                        return 0;
+                    }
             }
 
-        }else
-        // Case of a single player game
-        {
-            playTurn(fundationUpA, fundationUpB, fundationDownA, fundationDownB, hands, currentPlayer);
-        }
-
-        // Adding a card from the player's hand if the hand is empty in function of the number of players
-        if (hands[currentPlayer]->size == 0) {
-            for(int iCard = 0; iCard < 5; iCard++)
-            {
-                push(hands[currentPlayer], new Element{top(stock)});
-                pop(stock);
-            }
-        }
+        // Adding a card from the player's hand after his turn
+    // Adding a card from the player's hand after his turn
+    while(cardsPerPlayer != hands[currentPlayer]->size)
+    {
+        insert(hands[currentPlayer], new Element{top(stock)});
+        pop(stock);
+    }
 
         // Pass to the next player
         currentPlayer = (currentPlayer + 1) % numberOfPlayers;
-    }
-
-    // Calculation of the final score
-    cout << "Game Over! Final score : " << score(hands[currentPlayer], stock) << endl;
+}
 
     // Freeing the memory
     for (int nbDel = 0; nbDel < numberOfPlayers; nbDel++) {

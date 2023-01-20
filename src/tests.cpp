@@ -379,19 +379,18 @@ void test_deleteList() {
   list = new List;
     initList(list, 1, 2, 3);
     cout << "********* Start testing of deleteList *********" << endl;
-    cout << "Before the test, here the values of the list" << endl;
     if (list->size == 3 and
             list->first->value == 1 and
             list->first->next->value == 2 and
             list->first->next->next->value == 3 and
             list->first->next->next->next == nullptr)
     {
-        cout << "PASS \t: xxx" << endl;
+        cout << "PASS \t: list has been well deleted" << endl;
         pass++;
     }
     else
     {
-        cout << "FAIL! \t: xxx" << endl;
+        cout << "FAIL! \t: the list has not been deleted" << endl;
         failed++;
     }
     cout << "Totals: " << pass << " passed, " << failed << " failed" << endl;
@@ -878,53 +877,50 @@ void test_isValid()
  * état initial du jeu -> 4 949
  * une liste avec 1, 2 et 3 et une avec 4, 5, 6 -> 21
  */
-void test_score()
-{
+
+void test_score() {
     int pass = 0;
     int failed = 0;
-    List * stock;
-    List * hand;
+
+    List* players[4];
+    for(int i = 0; i < 4; i++) {
+        players[i] = new List;
+    }
+    List* stock = new List;
+
     cout << "********* Start testing of score *********" << endl;
-    stock = new List;
-    hand = new List;
-    if (score(hand, stock) == 0)
-    {
+
+    // Test empty lists
+    if (score(players, stock, 4) == 0) {
         cout << "PASS \t: Listes vides" << endl;
         pass++;
-    }
-    else
-    {
+    } else {
         cout << "FAIL! \t: Listes vides" << endl;
         failed++;
     }
+
+    // Test initial game state
     shuffle(stock);
-    for (int i=0; i<8; i++)
-    {
-        Element * elt;
-        elt = new Element;
+    for (int i = 0; i < 8; i++) {
+        Element* elt = new Element;
         elt->value = top(stock);
-        insert(hand, elt);
+        insert(players[0], elt);
         pop(stock);
     }
-    if (score(hand, stock) == 4949)
-    {
+    if (score(players, stock, 4) == 98) {
         cout << "PASS \t: Début de partie" << endl;
         pass++;
-    }
-    else
-    {
+    } else {
         cout << "FAIL! \t: Début de partie" << endl;
         failed++;
-    }
-    emptyList(stock);
-    emptyList(hand);
+        }
     delete stock;
-    delete hand;
+    delete players[0];
     stock = new List;
-    hand = new List;
+    players[0] = new List;
     initList(stock, 1, 2, 3);
-    initList(hand, 4, 5, 6);
-    if (score(hand, stock) == 21)
+    initList(players[0], 4, 5, 6);
+    if (score(players, stock, 4) == 6)
     {
         cout << "PASS \t: stock {1,2,3} hand {4,5,6}" << endl;
         pass++;
@@ -935,9 +931,9 @@ void test_score()
         failed++;
     }
     emptyList(stock);
-    emptyList(hand);
+    emptyList(players[0]);
     cout << "Totals: " << pass << " passed, " << failed << " failed" << endl;
     cout << "********* Finished testing of score *********" << endl;
     delete stock;
-    delete hand;
+    delete players[0];
 }

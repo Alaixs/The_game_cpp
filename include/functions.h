@@ -154,6 +154,7 @@ bool moveSuccessful(List * aFundationUpA,List * aFundationUpB,List * aFundationD
  */
 void playTurn(List * fundationUpA, List * fundationUpB, List * fundationDownA, List * fundationDownB, List * hands[], int currentPlayer);
 
+
 /*
  * Calculate a score
  * Sum cards' value of the hand and the stock
@@ -162,7 +163,7 @@ void playTurn(List * fundationUpA, List * fundationUpB, List * fundationDownA, L
  * return: int a score
  * var: int sum
  */
-int score(const List* aHand, const List* aStock);
+int score(List* players[], List* stock,int numberOfPlayers);
 
 
 /*
@@ -176,15 +177,7 @@ int score(const List* aHand, const List* aStock);
 bool isGameOver(List * hand, List * fundationUpA, List * fundationUpB, List * fundationDownA, List * fundationDownB);
 
 
-/*
- * Calculate a score
- * Sum cards' value of the hand and the stock
- * param: a hand (list)
- * param: a stock (list)
- * return: int a score
- * var: int sum
- */
-int calculateScore(List* hand, List* stock);
+void displayEndScreen(List* players[], List* aStock, int numberOfPlayers);
 
 
 //i ^= 1;

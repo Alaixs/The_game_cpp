@@ -1,8 +1,9 @@
-//v1.6.0
+//v1.8.0
 #include "typeDef.h"
 #include "functions.h"
 #include <iostream>
 #include <random>
+#include <windows.h>
 
 using namespace std;
 
@@ -51,36 +52,40 @@ void pop(List * aList) {
     aList->size--;
 }
 
-void insert(List * aList, Element * anElement) {
-    // If the list is empty, we insert the element at the top of the list
-    if (aList->size == 0) {
-        aList->first = anElement;
-        aList->size++;
+
+
+void insert(List * aList, Element * anElement)
+{ 
+    // Check if the list is empty or if the first value is already the greater value
+    if ((aList->size == 0) || aList->first->value >= anElement->value)
+    {
+        push(aList, anElement);
         return;
     }
 
-    // If the element to insert is smaller than the element at the top of the list, we insert it at the top of the list
-    if (anElement->value <= aList->first->value) {
-        anElement->next = aList->first;
-        aList->first = anElement;
-        aList->size++;
-        return;
+    // Loop to compare every values
+    Element *current_node = aList->first;
+    while (current_node->next != nullptr)
+    {
+        if (current_node->next->value >= anElement->value)
+        {
+            anElement->next = current_node->next;
+            current_node->next = anElement;
+            aList->size++;
+            return;
+        }
+        current_node = current_node->next;
     }
 
-    // We search the position of the element to insert
-    Element * currentElement = aList->first;
-    // We stop when we find the position of the element to insert
-    while (currentElement->next != nullptr && currentElement->next->value < anElement->value) {
-        currentElement = currentElement->next;
-    }
-
-    // We insert the element
-    anElement->next = currentElement->next;
-    currentElement->next = anElement;
-
-    // We update the size of the list
+    // anElement->value is the greatest value
+    anElement->next = current_node->next;
+    current_node->next = anElement;
     aList->size++;
 }
+
+
+
+
 
 void displayList(const List * aList) {
     // We display the size of the list
@@ -182,13 +187,39 @@ void shuffle(List * aList) {
     }
 }
 
+void styleCardTop() {
+    SetConsoleOutputCP( 65001 );
+    cout << " ╭───╮  ╭───╮       ╭───╮   ╭───╮" << endl;
+}
+
+void styleCardBot() {
+    SetConsoleOutputCP( 65001 );
+    cout << " ╰───╯  ╰───╯       ╰───╯   ╰───╯" << endl;
+}
+
+// Returns a string with the number of the card and a fixed length
+string formatNumber(int number) {
+    // Convert the number to a string
+    string result = to_string(number);
+    if (number < 10) {
+        result = "  " + result;
+    } else if (number < 100) {
+        result = " " + result;
+    }
+    return result;
+}
+
+
 // Displays the board with the cards in the foundations and in the hand
 void displayBoard(const List * aFundationUpA, const List * aFundationUpB, const  List * aFundationDownA, const List * aFundationDownB, const List * aHand) {
-    cout << "A  B  x  C   D" << endl;
-    cout << top(aFundationUpA) << "  " << top(aFundationUpB) << "  x " << top(aFundationDownA) << "  " << top(aFundationDownB) << endl ;
+    cout << "   A      B     x     C       D" << endl;
+    styleCardTop();
+    cout << " │" << formatNumber(top(aFundationUpA)) << "│  │" << formatNumber(top(aFundationUpB)) << "│   x   │" << formatNumber(top(aFundationDownA)) << "│   │" << formatNumber(top(aFundationDownB)) << "│" << endl ;
+    styleCardBot();
     cout << "Hand: ";
     displayList(aHand);
 }
+
 
 bool moveUp(List * aList, const int aCard) {
 
@@ -308,12 +339,18 @@ void playTurn(List * fundationUpA, List * fundationUpB, List * fundationDownA, L
 }
 
 
+
+
+
 bool isGameOver(List * hand, List * fundationUpA, List * fundationUpB, List * fundationDownA, List * fundationDownB)
 {
     Element * current = hand->first;
     while (current != NULL) {
       // If the card is valid, the game is not over
-        if (current->value > top(fundationUpA) || current->value + 10 == top(fundationUpA) || current->value < top(fundationDownA) || current->value - 10 == top(fundationDownA) ||(current->value > top(fundationUpB) || current->value + 10 == top(fundationUpB) || current->value < top(fundationDownB) || current->value - 10 == top(fundationDownB))) {
+        if (current->value > top(fundationUpA) || current->value + 10 == top(fundationUpA) || current->value < top(fundationDownA)
+           || current->value - 10 == top(fundationDownA) ||(current->value > top(fundationUpB) 
+           || current->value + 10 == top(fundationUpB) || current->value < top(fundationDownB) 
+           || current->value - 10 == top(fundationDownB))) {
             return false;
         }
         current = current->next;
@@ -322,23 +359,23 @@ bool isGameOver(List * hand, List * fundationUpA, List * fundationUpB, List * fu
     return true;
 }
 
-int score(const List* aHand, const List* aStock) {
+int score(List* players[], List* stock, int numberOfPlayers) {
+    int score = stock->size;
+    for (int i = 0; i < numberOfPlayers; i++) {
+        score += players[i]->size;
+    }
+    return score;
+}
 
-    int sum = 0;
-    // Course of the hand and add the values of the cards to the sum
-    Element * currentElement = aHand->first;
-    while (currentElement != nullptr) {
-        sum += currentElement->value;
-        currentElement = currentElement->next;
+
+
+void displayEndScreen(List* players[], List* aStock, int numberOfPlayers) {
+    for (int i = 0; i < numberOfPlayers; i++) {
+    if (aStock->size == 0 && players[i]->size == 0) {
+        cout << "Congratulations, you won!" << endl;
+    }}
+    if (aStock->size != 0) {
+        cout << "You lost, better luck next time! Your score is: " << score(players, aStock, numberOfPlayers) << endl;
     }
 
-    // Course of the stock and add the values of the cards to the sum
-    currentElement = aStock->first;
-    while (currentElement != nullptr) {
-        sum += currentElement->value;
-        currentElement = currentElement->next;
-    }
-
-    // Return the sum
-    return sum;
 }
