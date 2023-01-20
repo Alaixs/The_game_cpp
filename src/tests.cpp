@@ -371,30 +371,26 @@ void test_displayList()
  * Tests
  * Liste 1, 2, 3 -> liste vide, taille 0
  * Liste vide -> liste vide, taille = 0
- */
-void test_deleteList() {
-    int pass = 0;
-    int failed = 0;
-  List * list;
-  list = new List;
-    initList(list, 1, 2, 3);
-    cout << "********* Start testing of deleteList *********" << endl;
-    if (list->size == 3 and
-            list->first->value == 1 and
-            list->first->next->value == 2 and
-            list->first->next->next->value == 3 and
-            list->first->next->next->next == nullptr)
-    {
-        cout << "PASS \t: list has been well deleted" << endl;
-        pass++;
-    }
-    else
-    {
-        cout << "FAIL! \t: the list has not been deleted" << endl;
-        failed++;
-    }
-    cout << "Totals: " << pass << " passed, " << failed << " failed" << endl;
-    cout << "********* Finished testing of min *********" << endl;
+ */void test_deleteList() {
+int pass = 0;
+int failed = 0;
+List * list;
+list = new List;
+initList(list, 1, 2, 3);
+cout << "********* Start testing of deleteList " << endl;
+deleteList(list);
+if (list->size == 0 && list->first == nullptr)
+{
+cout << "PASS \t: list has been well deleted" << endl;
+pass++;
+}
+else
+{
+cout << "FAIL! \t: the list has not been deleted" << endl;
+failed++;
+}
+cout << "Totals: " << pass << " passed, " << failed << " failed" << endl;
+cout << " Finished testing of deleteList *********" << endl;
 }
 /*
  * Tests

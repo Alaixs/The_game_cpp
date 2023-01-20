@@ -1,4 +1,4 @@
-//v1.8.0
+//v1.10.0
 #include "typeDef.h"
 #include "functions.h"
 #include <iostream>
@@ -7,7 +7,45 @@
 
 using namespace std;
 
+// Title of the game in ascii art
+void title()
+{
 
+    cout << R"(
+
+
+                :::!~!!!!!:.
+                  .xUHWH!! !!?M88WHX:.              @Alaixs
+                .X*#M@$!!  !X!M$$$$$$WWx:.
+               :!!!!!!?H! :!$!$$$$$$$$$$8X:          .------..------..------.     .------..------..------..------.  
+              !!~  ~:~!! :~!$!#$$$$$$$$$$8X:         |T.--. ||H.--. ||E.--. |.-.  |G.--. ||A.--. ||M.--. ||E.--. |
+             :!~::!H!<   ~.U$X!?R$$$$$$$$MM!         | :/\: || :/\: || (\/) ((5)) | :/\: || (\/) || (\/) || (\/) |
+             ~!~!!!!~~ .:XW$$$U!!?$$$$$$RMM!         | (__) || (__) || :\/: |'-.-.| :\/: || :\/: || :\/: || :\/: |
+               !:~~~ .:!M"T#$$$$WX??#MRRMMM!         | '--'T|| '--'H|| '--'E| ((1)) '--'G|| '--'A|| '--'M|| '--'E|
+               ~?WuxiW*`   `"#$$$$8!!!!??!!!         `------'`------'`------'  '-'`------'`------'`------'`------'
+             :X- M$$$$       `"T#$T~!8$WUXU~
+            :%`  ~#$$$m:        ~!~ ?$$$$$$
+          :!`.-   ~T$$$$8xx.  .xWW- ~""##*"
+.....   -~~:<` !    ~?T#$$@@W@*?$$      /`
+W$@@M!!! .!~~ !!     .:XUW$W!~ `"~:    :
+#"~~`.:x%`!!  !H:   !WM$$$$Ti.: .!WUn+!`
+:::~:!!`:X~ .: ?H.!u "$$$B$$$!W:U!T$$M~
+.~~   :X@!.-~   ?@WTWo("*$$$W$TH$! `
+Wi.~!X$?!-~    : ?$$$B$Wu("**$RM!
+$R@i.~~ !     :   ~$$$$$B$$en:``
+?MXT@Wx.~    :     ~"##*$$$$M~
+
+)" << '\n';
+
+
+}
+
+// Clear the screen and wait for the user to press a key
+void clearScreen()
+{
+    system("pause");
+    system("cls");
+}
 
 void push(List* aList, Element* anElement) {
     // Update of the list size
@@ -187,11 +225,13 @@ void shuffle(List * aList) {
     }
 }
 
+// The style of the card for the top
 void styleCardTop() {
     SetConsoleOutputCP( 65001 );
     cout << " ╭───╮  ╭───╮       ╭───╮   ╭───╮" << endl;
 }
 
+// The style of the card for the bottom
 void styleCardBot() {
     SetConsoleOutputCP( 65001 );
     cout << " ╰───╯  ╰───╯       ╰───╯   ╰───╯" << endl;
@@ -213,6 +253,7 @@ string formatNumber(int number) {
 // Displays the board with the cards in the foundations and in the hand
 void displayBoard(const List * aFundationUpA, const List * aFundationUpB, const  List * aFundationDownA, const List * aFundationDownB, const List * aHand) {
     cout << "   A      B     x     C       D" << endl;
+    cout << "   1      1     x    100     100" << endl;
     styleCardTop();
     cout << " │" << formatNumber(top(aFundationUpA)) << "│  │" << formatNumber(top(aFundationUpB)) << "│   x   │" << formatNumber(top(aFundationDownA)) << "│   │" << formatNumber(top(aFundationDownB)) << "│" << endl ;
     styleCardBot();
@@ -322,23 +363,24 @@ bool moveSuccessful(List * aFundationUpA,List * aFundationUpB,List * aFundationD
 }
 
 void playTurn(List * fundationUpA, List * fundationUpB, List * fundationDownA, List * fundationDownB, List * hands[], int currentPlayer) {
+    // Display the current state of the board
     displayBoard(fundationUpA, fundationUpB, fundationDownA, fundationDownB, hands[currentPlayer]);
     int card;
     char stack;
+    // Get the user input for the card and the stack they want to move it to
     play(card, stack);
+    // Check if the selected card is in the user's hand
     if (!isValid(hands[currentPlayer], card)) {
         cout << "Invalid card, please try again." << endl;
-
     }
+    // Check if the move is valid
     if (!moveSuccessful(fundationUpA, fundationUpB, fundationDownA, fundationDownB,stack,card)) {
         cout << "Unable to move, please try again." << endl;
-
     }
+    // Remove the card from the user's hand
     remove(hands[currentPlayer], card);
 
 }
-
-
 
 
 
@@ -367,15 +409,18 @@ int score(List* players[], List* stock, int numberOfPlayers) {
     return score;
 }
 
-
-
 void displayEndScreen(List* players[], List* aStock, int numberOfPlayers) {
+    bool isWon = true;
     for (int i = 0; i < numberOfPlayers; i++) {
-    if (aStock->size == 0 && players[i]->size == 0) {
-        cout << "Congratulations, you won!" << endl;
-    }}
-    if (aStock->size != 0) {
-        cout << "You lost, better luck next time! Your score is: " << score(players, aStock, numberOfPlayers) << endl;
+        if (aStock->size != 0 || players[i]->size != 0) {
+            isWon = false;
+            break;
+        }
     }
 
+    if (isWon) {
+        cout << "\033[43mCongratulations, you won!\033[0m" << endl;
+    } else {
+        cout << "\033[41mYou lost, better luck next time! Your score is: " << score(players, aStock, numberOfPlayers) << "\033[0m" << endl;
+    }
 }

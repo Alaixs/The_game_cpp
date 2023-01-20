@@ -7,6 +7,15 @@
  * Utility functions for data structure (based on STL API)
  */
 
+/*
+* Display the title of the game
+*/
+void title();
+
+/*
+ * Clear the screen
+ */
+void clearScreen();
 
 /*
  * Inserts a new element at the top of a list (stack), above its current top
@@ -177,6 +186,12 @@ int score(List* players[], List* stock,int numberOfPlayers);
 bool isGameOver(List * hand, List * fundationUpA, List * fundationUpB, List * fundationDownA, List * fundationDownB);
 
 
+/*
+ * Display the end screen
+ * param: fundations (up and down)
+ * param: a stock (stack)
+ * param: the player hand (list)
+ */
 void displayEndScreen(List* players[], List* aStock, int numberOfPlayers);
 
 
