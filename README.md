@@ -1,4 +1,4 @@
-# The_game_cpp
+# The game cpp
 
 Here is a C++ version of "The Game" (card game).
 
